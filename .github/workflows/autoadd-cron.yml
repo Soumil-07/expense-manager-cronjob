@@ -2,7 +2,7 @@ name: Email Parser Cron
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # every 15 minutes
+    - cron: "0 * * * *"      # every hour
   workflow_dispatch:         # allow manual run
 
 jobs:
