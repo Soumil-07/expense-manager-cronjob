@@ -8,6 +8,7 @@ on:
 jobs:
   run-parser:
     runs-on: ubuntu-latest
+    environment: Default
 
     steps:
       - name: Checkout repo
