@@ -5,6 +5,7 @@ import email
 from bs4 import BeautifulSoup
 from datetime import datetime
 import psycopg2
+from parse_message import parse_message
 
 # --- ENV Vars ---
 
@@ -16,39 +17,6 @@ DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
-
-# Patterns
-amount_pattern = r"Rs\.?\s?([\d,]+\.\d{2})"
-date_pattern   = r"on\s+(\d{2}-\d{2}-\d{2})"
-type_pattern   = r"\b(credited|debited)\b"
-
-DEFAULT_ACCOUNT_ID = 1
-
-def parse_transaction(body: str):
-    amount_match = re.search(amount_pattern, body, re.IGNORECASE)
-    date_match   = re.search(date_pattern, body, re.IGNORECASE)
-    type_match   = re.search(type_pattern, body, re.IGNORECASE)
-
-    if not (amount_match and date_match and type_match):
-        print("❌ Could not parse email:\n", body)
-        return None
-
-    txn_type = type_match.group(1).lower()
-    amount = float(amount_match.group(1).replace(",", ""))
-    # Correctly parse DD-MM-YY
-    date_obj = datetime.strptime(date_match.group(1), "%d-%m-%y")
-    account_id = DEFAULT_ACCOUNT_ID
-
-    return {
-        "type": "income" if txn_type == "credited" else "expense",
-        "amount": amount,
-        "category": "Uncategorized",
-        "title": "New Transaction",
-        "account_id": account_id,
-        "date": date_obj,
-        "tags": []
-    }
-
 
 def get_email_body(msg):
     body = ""
@@ -113,7 +81,7 @@ def main():
 
         body = get_email_body(msg)
         print(body)
-        txn = parse_transaction(body)
+        txn = parse_message(body)
         print(txn)
 
         if txn:
