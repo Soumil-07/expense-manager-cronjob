@@ -32,7 +32,9 @@ def parse_upi_message(message: str):
         "category": "Uncategorized",
         "title": tx_type == 'credited' and f'Payment from {receiver}' or f'Payment to {receiver}',
         "account_id": DEFAULT_ACCOUNT_ID,
-        "tags": []
+        "tags": [],
+        "receiver": receiver if tx_type == 'debited' else None,
+        "sender": receiver if tx_type == 'credited' else None
     }
 
 def parse_debit_card_message(message: str):
@@ -47,7 +49,9 @@ def parse_debit_card_message(message: str):
         "category": "Uncategorized",
         "title": f'Payment to {receiver}',
         "account_id": DEFAULT_ACCOUNT_ID,
-        "tags": []
+        "tags": [],
+        "receiver": receiver,
+        "sender": None
     }
 
 if __name__ == "__main__":
