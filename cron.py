@@ -43,7 +43,7 @@ def save_transaction(conn, txn):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO transactions (type, amount, category, title, account_id, date, tags, sender, receiver)
+            INSERT INTO transactions (type, amount, category, title, account_id, date, tags, meta_sender_id, meta_receiver_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (txn["type"], txn["amount"], txn["category"], txn["title"],
