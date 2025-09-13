@@ -12,8 +12,8 @@ DEBIT_CARD_REGEXP_AMOUNT = re.compile(r"Rs\.?\s?([\d,]+\.\d{2})")
 DEBIT_CARD_REGEXP_RECEIVER = re.compile(r'at\s+([A-Z\s]+?)\s+on\s+')
 DEBIT_CARD_REGEXP_DATE = re.compile(r"on\s+(\d{2}-\d{2}-\d{2})")
 
-FOREX_CARD_REGEXP_AMOUNT = re.compile(r"USD\s+([\d,]+\.\d{2})")
-FOREX_CARD_REGEXP_RECEIVER = re.compile(r'at\s+([A-Z\s]+?)\s+on\s+')
+FOREX_CARD_REGEXP_AMOUNT = re.compile(r"USD\s+([\d,]+(?:\.\d{0,2})?)")
+FOREX_CARD_REGEXP_RECEIVER = re.compile(r'at\s+(.+?)\s+on\s+')
 FOREX_CARD_REGEXP_DATE = re.compile(r"on\s+(\d{2}-\d{2}-\d{4})")
 
 def parse_message(message: str):
@@ -21,7 +21,7 @@ def parse_message(message: str):
         return parse_upi_message(message)
     elif 'Debit Card' in message:
         return parse_debit_card_message(message)
-    elif 'ISIC Forex' in message:
+    elif 'ISIC Forex' in message and 'used for making a payment' in message:
         return forex_message(message)
     else:
         return None
