@@ -59,7 +59,7 @@ def main():
     mail.select("inbox")
 
     # Fetch unread HDFC alerts
-    status, messages = mail.search(None, '(UNSEEN OR FROM "alerts@hdfcbank.net" OR FROM "PrepaidCards@hdfcbank.net")')
+    status, messages = mail.search(None, '(UNSEEN FROM "alerts@hdfcbank.net" OR FROM "PrepaidCards@hdfcbank.net")')
     email_ids = messages[0].split()
 
     if not email_ids:
