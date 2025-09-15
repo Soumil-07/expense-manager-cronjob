@@ -13,10 +13,7 @@ IMAP_HOST = "imap.gmail.com"
 IMAP_USER = os.getenv("EMAIL_USER")       # your Gmail address
 IMAP_PASS = os.getenv("EMAIL_PASS")       # Gmail App Password
 DEFAULT_ACCOUNT_ID = 1                    # map all transactions here
-DB_HOST = os.getenv("DB_HOST")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
+DB_URL = os.getenv("DB_URL")
 
 def get_email_body(msg):
     body = ""
@@ -71,12 +68,7 @@ def main():
         return
 
     # --- Connect DB ---
-    conn = psycopg2.connect(
-        host=DB_HOST,
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS
-    )
+    conn = psycopg2.connect(DB_URL)
 
     for eid in email_ids:
         res, msg_data = mail.fetch(eid, "(RFC822)")
