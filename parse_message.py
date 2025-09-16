@@ -1,7 +1,8 @@
 from datetime import datetime
 import re
 
-DEFAULT_ACCOUNT_ID = 1
+HDFC_ACCOUNT_ID = 1
+HDFC_FOREX_ACCOUNT_ID = 2
 
 UPI_REGEXP_TYPE = re.compile(r"\b(credited|debited)\b")
 UPI_REGEXP_AMOUNT = re.compile(r"Rs\.?\s?([\d,]+\.\d{2})")
@@ -38,7 +39,7 @@ def parse_upi_message(message: str):
         "date": datetime.strptime(date, "%d-%m-%y"),
         "category": "Uncategorized",
         "title": tx_type == 'credited' and f'Payment from {receiver}' or f'Payment to {receiver}',
-        "account_id": DEFAULT_ACCOUNT_ID,
+        "account_id": HDFC_ACCOUNT_ID,
         "tags": [],
         "receiver": receiver if tx_type == 'debited' else None,
         "sender": receiver if tx_type == 'credited' else None
@@ -56,7 +57,7 @@ def parse_debit_card_message(message: str):
         "date": datetime.strptime(date, "%d-%m-%y"),
         "category": "Uncategorized",
         "title": f'Payment to {receiver}',
-        "account_id": DEFAULT_ACCOUNT_ID,
+        "account_id": HDFC_ACCOUNT_ID,
         "tags": [],
         "receiver": receiver,
         "sender": None
@@ -74,7 +75,7 @@ def forex_message(message: str):
         "date": datetime.strptime(date, "%d-%m-%Y"),
         "category": "Uncategorized",
         "title": f'Payment to {receiver}',
-        "account_id": DEFAULT_ACCOUNT_ID,
+        "account_id": HDFC_FOREX_ACCOUNT_ID,
         "tags": [],
         "receiver": receiver,
         "sender": None
