@@ -1,9 +1,7 @@
 import os
-import re
 import imaplib
 import email
 from bs4 import BeautifulSoup
-from datetime import datetime
 import psycopg2
 from parse_message import parse_message
 
@@ -56,11 +54,11 @@ def main():
     mail.select("inbox")
 
     # Fetch unread HDFC alerts
-    status, messages = mail.search(None, 'UNSEEN FROM "alerts@hdfcbank.net"')
+    _, messages = mail.search(None, 'UNSEEN FROM "alerts@hdfcbank.net"')
     email_ids = messages[0].split()
     
     # Also fetch from PrepaidCards
-    status2, messages2 = mail.search(None, 'UNSEEN FROM "PrepaidCards@hdfcbank.net"')
+    _, messages2 = mail.search(None, 'UNSEEN FROM "PrepaidCards@hdfcbank.net"')
     email_ids.extend(messages2[0].split())
 
     if not email_ids:
@@ -71,14 +69,12 @@ def main():
     conn = psycopg2.connect(DB_URL)
 
     for eid in email_ids:
-        res, msg_data = mail.fetch(eid, "(RFC822)")
+        _, msg_data = mail.fetch(eid, "(RFC822)")
         raw_email = msg_data[0][1]
         msg = email.message_from_bytes(raw_email)
 
         body = get_email_body(msg)
-        print(body)
         txn = parse_message(body)
-        print(txn)
 
         if txn:
             save_transaction(conn, txn)
