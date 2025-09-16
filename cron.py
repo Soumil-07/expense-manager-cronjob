@@ -5,8 +5,6 @@ from bs4 import BeautifulSoup
 import psycopg2
 from parse_message import parse_message
 
-# --- ENV Vars ---
-
 IMAP_HOST = "imap.gmail.com"
 IMAP_USER = os.getenv("EMAIL_USER")       # your Gmail address
 IMAP_PASS = os.getenv("EMAIL_PASS")       # Gmail App Password

@@ -14,8 +14,8 @@ DEBIT_CARD_REGEXP_RECEIVER = re.compile(r'at\s+([A-Z\s]+?)\s+on\s+')
 DEBIT_CARD_REGEXP_DATE = re.compile(r"on\s+(\d{2}-\d{2}-\d{2})")
 
 FOREX_CARD_REGEXP_AMOUNT = re.compile(r"USD\s+([\d,]+(?:\.\d{0,2})?)")
-FOREX_CARD_REGEXP_RECEIVER = re.compile(r'at\s+(.+?)\s+on\s+')
-FOREX_CARD_REGEXP_DATE = re.compile(r"on\s+(\d{2}-\d{2}-\d{4})")
+FOREX_CARD_REGEXP_RECEIVER = re.compile(r'\bat\s+(.+?)\s+on\s+')
+FOREX_CARD_REGEXP_DATE = re.compile(r"\bon\s+(\d{2}-\d{2}-\d{4})")
 
 def parse_message(message: str):
     if 'VPA' in message:
