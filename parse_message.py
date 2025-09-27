@@ -1,8 +1,11 @@
 from datetime import datetime
 import re
 
+from auto_categorize import try_auto_categorize_chase
+
 HDFC_ACCOUNT_ID = 1
 HDFC_FOREX_ACCOUNT_ID = 2
+CHASE_ACCOUNT_ID = 3
 
 UPI_REGEXP_TYPE = re.compile(r"\b(credited|debited)\b")
 UPI_REGEXP_AMOUNT = re.compile(r"Rs\.?\s?([\d,]+\.\d{2})")
@@ -17,13 +20,17 @@ FOREX_CARD_REGEXP_AMOUNT = re.compile(r"USD\s+([\d,]+(?:\.\d{0,2})?)")
 FOREX_CARD_REGEXP_RECEIVER = re.compile(r'\bat\s+(.+?)\s+on\s+')
 FOREX_CARD_REGEXP_DATE = re.compile(r"\bon\s+(\d{2}-\d{2}-\d{4})")
 
+CHASE_REGEXP_AMOUNT = re.compile(r"\$([\d,]+\.\d{2})")
+CHASE_REGEXP_RECEIVER = re.compile(r'with\s+([A-Z\s\*\-\.\&\#]+?)\s+Account\s+ending\s+in')
+CHASE_REGEXP_DATE = re.compile(r"Made\s+on\s+(\w{3}\s+\d{1,2},\s+\d{4})")
+
 def parse_message(message: str):
     if 'VPA' in message:
         return parse_upi_message(message)
-    elif 'Debit Card' in message:
-        return parse_debit_card_message(message)
     elif 'ISIC Forex' in message and 'used for making a payment' in message:
         return forex_message(message)
+    elif 'chase.com' and 'Transaction alert' in message:
+        return chase_message(message)
     else:
         return None
 
@@ -81,3 +88,22 @@ def forex_message(message: str):
         "sender": None
     }
 
+def chase_message(message: str):
+    tx_type = 'expense'
+    amount = CHASE_REGEXP_AMOUNT.search(message).group(1)
+    receiver = CHASE_REGEXP_RECEIVER.search(message).group(1)
+    date = CHASE_REGEXP_DATE.search(message).group(1)
+
+    auto_categorize = try_auto_categorize_chase(receiver, f'Payment to {receiver}')
+
+    return {
+        "type": tx_type,
+        "amount": float(amount),
+        "date": datetime.strptime(date, "%b %d, %Y"),
+        "category": auto_categorize['category'],
+        "title": auto_categorize['title'],
+        "account_id": CHASE_ACCOUNT_ID,
+        "tags": [],
+        "receiver": receiver,
+        "sender": None
+    }

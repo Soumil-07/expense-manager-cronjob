@@ -59,6 +59,9 @@ def main():
     _, messages2 = mail.search(None, 'UNSEEN FROM "PrepaidCards@hdfcbank.net"')
     email_ids.extend(messages2[0].split())
 
+    _, messages3 = mail.search(None, 'UNSEEN FROM "no.reply.alerts@chase.com" SINCE 22-Sep-2025')
+    email_ids.extend(messages3[0].split())
+
     if not email_ids:
         print("📭 No new emails.")
         return
@@ -72,6 +75,7 @@ def main():
         msg = email.message_from_bytes(raw_email)
 
         body = get_email_body(msg)
+        print(body)
         txn = parse_message(body)
 
         if txn:
