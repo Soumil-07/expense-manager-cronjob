@@ -9,6 +9,11 @@ def try_auto_categorize_chase(receiver: str, default_title: str):
             'category': 'Food',
             'title': 'Panda Express'
         }
+    elif 'street corner' in receiver.lower():
+        return {
+                'category': 'Groceries',
+                'title': 'Street Corner'
+            }
     elif 'enterprise carshare' in receiver.lower():
         return {
             'category': 'Transport',
