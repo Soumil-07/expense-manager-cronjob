@@ -21,7 +21,7 @@ FOREX_CARD_REGEXP_RECEIVER = re.compile(r'\bat\s+(.+?)\s+on\s+')
 FOREX_CARD_REGEXP_DATE = re.compile(r"\bon\s+(\d{2}-\d{2}-\d{4})")
 
 CHASE_REGEXP_AMOUNT = re.compile(r"\$([\d,]+\.\d{2})")
-CHASE_REGEXP_RECEIVER = re.compile(r'with\s+([A-Z\s\*\-\.\&\#]+?)\s+Account\s+ending\s+in')
+CHASE_REGEXP_RECEIVER = re.compile(r'with\s+([A-Z\s\d\*\-\.\&\#]+?)\s+Account\s+ending\s+in')
 CHASE_REGEXP_DATE = re.compile(r"Made\s+on\s+(\w{3}\s+\d{1,2},\s+\d{4})")
 
 def parse_message(message: str):
@@ -42,7 +42,7 @@ def parse_upi_message(message: str):
 
     return {
         "type": 'income' if tx_type == 'credited' else 'expense',
-        "amount": float(amount),
+        "amount": float(amount) * 100,
         "date": datetime.strptime(date, "%d-%m-%y"),
         "category": "Uncategorized",
         "title": tx_type == 'credited' and f'Payment from {receiver}' or f'Payment to {receiver}',
@@ -60,7 +60,7 @@ def parse_debit_card_message(message: str):
 
     return {
         "type": tx_type,
-        "amount": float(amount),
+        "amount": float(amount) * 100,
         "date": datetime.strptime(date, "%d-%m-%y"),
         "category": "Uncategorized",
         "title": f'Payment to {receiver}',
@@ -78,7 +78,7 @@ def forex_message(message: str):
 
     return {
         "type": tx_type,
-        "amount": float(amount),
+        "amount": float(amount) * 100,
         "date": datetime.strptime(date, "%d-%m-%Y"),
         "category": "Uncategorized",
         "title": f'Payment to {receiver}',
@@ -98,7 +98,7 @@ def chase_message(message: str):
 
     return {
         "type": tx_type,
-        "amount": float(amount),
+        "amount": float(amount) * 100,
         "date": datetime.strptime(date, "%b %d, %Y"),
         "category": auto_categorize['category'],
         "title": auto_categorize['title'],
