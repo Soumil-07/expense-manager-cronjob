@@ -21,7 +21,7 @@ FOREX_CARD_REGEXP_RECEIVER = re.compile(r'\bat\s+(.+?)\s+on\s+')
 FOREX_CARD_REGEXP_DATE = re.compile(r"\bon\s+(\d{2}-\d{2}-\d{4})")
 
 CHASE_REGEXP_AMOUNT = re.compile(r"\$([\d,]+\.\d{2})")
-CHASE_REGEXP_RECEIVER = re.compile(r'with\s+([A-Z\s\d\*\-\.\&\#]+?)\s+Account\s+ending\s+in')
+CHASE_REGEXP_RECEIVER = re.compile(r'with\s+([A-Z\s\d\*\-\.\&\#\/]+?)\s+Account\s+ending\s+in')
 CHASE_REGEXP_DATE = re.compile(r"Made\s+on\s+(\w{3}\s+\d{1,2},?\s+\d{4})")
 
 def parse_message(message: str):
